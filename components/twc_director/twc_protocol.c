@@ -252,27 +252,28 @@ bool twc_decode_peripheral_negotiation_payload(const uint8_t *payload,
 bool twc_decode_meter_payload(const uint8_t *payload,
                                size_t payload_len,
                                twc_meter_data_t *out) {
-  if (payload == NULL || out == NULL || payload_len < 15) {
+  if (payload == NULL || out == NULL || payload_len < 16) {
     return false;
   }
 
   // Big-endian 32-bit total energy in kWh
-  uint32_t total_kwh = ((uint32_t)payload[0] << 24) |
-                       ((uint32_t)payload[1] << 16) |
-                       ((uint32_t)payload[2] << 8)  |
-                       ((uint32_t)payload[3]);
+  uint32_t total_kwh = ((uint32_t)payload[0] << 32) |
+                       ((uint32_t)payload[1] << 24) |
+                       ((uint32_t)payload[2] << 16) |
+                       ((uint32_t)payload[3] << 8)  |
+                       ((uint32_t)payload[4]);
 
   out->total_energy_kwh = (float)total_kwh;
 
   // Voltages (direct values)
-  out->phase_l2_v = (float)payload[4];
-  out->phase_l1_v = (float)payload[5];
-  out->phase_l3_v = (float)payload[6];
+  out->phase_l2_v = (float)payload[5];
+  out->phase_l1_v = (float)payload[6];
+  out->phase_l3_v = (float)payload[7];
 
   // Currents (0.5A units)
-  out->phase_l2_a = (float)payload[9] / 2.0f;
-  out->phase_l1_a = (float)payload[10] / 2.0f;
-  out->phase_l3_a = (float)payload[11] / 2.0f;
+  out->phase_l2_a = (float)payload[10] / 2.0f;
+  out->phase_l1_a = (float)payload[11] / 2.0f;
+  out->phase_l3_a = (float)payload[12] / 2.0f;
 
   return true;
 }
