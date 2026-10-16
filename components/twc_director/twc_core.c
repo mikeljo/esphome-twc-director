@@ -331,7 +331,7 @@ static bool handle_startup_burst(twc_core_t *core, uint32_t now_ms) {
     return false;
   }
 
-  uint8_t frame[16];
+  uint8_t frame[18];
   size_t frame_len = 0;
 
   // Send E1 frames, then E2 frames
